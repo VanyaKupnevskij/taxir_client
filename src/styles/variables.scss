@@ -1,0 +1,22 @@
+@import './mixins.scss';
+
+$black_color: #162023;
+$white_color: #fbfbfb;
+$green_color: #27ae60;
+$red_color: #fa3f61;
+$blue_color: #0e81b4;
+
+$primary_color: #d8c1fd;
+$secondary_color: #ffa7b7;
+$background_color: #fafafa;
+$panel_color: #f6f2fa;
+
+$box_shadow: 0px 4px 8px rgba($black_color, 0.08);
+
+$border_radius: 10px;
+$border: min(pxToRem(2px), 2px) solid $primary_color;
+
+$base_font: 'Montserrat', sans-serif;
+
+$container_max_width: pxToRem(1100px);
+$gap_block: pxToRem(20px);
