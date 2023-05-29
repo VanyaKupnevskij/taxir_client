@@ -7,6 +7,7 @@ import SignupPage from './pages/Signup';
 import TripsPage from './pages/Trips';
 import CreateTripPage from './pages/CreateTrip';
 import SelfTripsPage from './pages/SelfTrips';
+import ProfilePage from './pages/Profile';
 
 import { AuthContext } from './context/context';
 import { useEffect, useState } from 'react';
@@ -54,6 +55,7 @@ function App() {
           role === 'driver' ? (
             <Routes>
               <Route index exact path="/trips" element={<TripsPage />} />
+              <Route index exact path="/profile" element={<ProfilePage />} />
               <Route strict exact path="/trips/self" element={<SelfTripsPage />} />
 
               <Route path="*" element={<Navigate to="/trips" />} />
@@ -61,6 +63,7 @@ function App() {
           ) : (
             <Routes>
               <Route strict exact path="/trips/self" element={<SelfTripsPage />} />
+              <Route index exact path="/profile" element={<ProfilePage />} />
               <Route strict exact path="/trip/create" element={<CreateTripPage />} />
 
               <Route path="*" element={<Navigate to="/trips/self" />} />

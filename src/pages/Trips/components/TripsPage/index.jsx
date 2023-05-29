@@ -115,6 +115,7 @@ function TripsPage() {
         <Button node="button" large modal="confirm" waves="light" onClick={handleLogout}>
           Вийти
         </Button>
+        <Link to="/profile">Профіль</Link>
         <Link to="/trips/self">Свої поїздки</Link>
         <Link to="/trips">Всі поїздки</Link>
       </Navbar>
