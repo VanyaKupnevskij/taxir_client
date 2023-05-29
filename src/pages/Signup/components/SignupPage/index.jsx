@@ -3,16 +3,49 @@ import globalStyles from '../../../../styles/global.module.scss';
 import styles from './style.module.scss';
 import { Link } from 'react-router-dom';
 import { Button, Icon, NavItem, Navbar, Select, TextInput } from 'react-materialize';
+import http from '../../../../axios.common';
+import { useMessage } from '../../../../message.hook';
 
 function SignupPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const message = useMessage();
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    role: '',
+    firstName: '',
+    lastName: '',
+  });
 
-  function handleSignup(e) {
+  function handleChange(name, event) {
+    setForm({ ...form, [name]: event.target.value });
+  }
+
+  async function handleSignup(e) {
     e.preventDefault();
+
+    try {
+      const data = (await http.post('/customer/create', form)).data;
+
+      if (!data || data.customerId == 0) {
+        throw Error('Такий користувач вже існує');
+      }
+
+      setForm({
+        email: '',
+        password: '',
+        role: '',
+        firstName: '',
+        lastName: '',
+      });
+
+      message('Реєстрація успішна!');
+    } catch (error) {
+      console.log(error);
+      message('Помилка при реєстрації');
+
+      localStorage.setItem('user_id', 0);
+      localStorage.setItem('role', 0);
+    }
   }
 
   return (
@@ -48,21 +81,48 @@ function SignupPage() {
           <div className="row">
             <form className="col s12">
               <div className="row">
-                <TextInput email id="input_email" label="Email" validate m={12} />
+                <TextInput
+                  email
+                  id="input_email"
+                  label="Email"
+                  validate
+                  m={12}
+                  value={form.email}
+                  onChange={(event) => handleChange('email', event)}
+                />
               </div>
               <div className="row">
-                <TextInput password id="input_password" label="Пароль" validate m={12} />
+                <TextInput
+                  password
+                  data-length={20}
+                  id="input_password"
+                  label="Пароль"
+                  validate
+                  m={12}
+                  value={form.password}
+                  onChange={(event) => handleChange('password', event)}
+                />
               </div>
               <div className="row">
-                <TextInput id="input_firstName" label="Ім'я" />
-                <TextInput id="input_lastName" label="Призвіще" />
+                <TextInput
+                  id="input_firstName"
+                  label="Ім'я"
+                  value={form.firstName}
+                  onChange={(event) => handleChange('firstName', event)}
+                />
+                <TextInput
+                  id="input_lastName"
+                  label="Призвіще"
+                  value={form.lastName}
+                  onChange={(event) => handleChange('lastName', event)}
+                />
               </div>
               <div className="row">
                 <Select
                   id="select_role"
                   m={12}
                   multiple={false}
-                  onChange={function noRefCheck() {}}
+                  onChange={(event) => handleChange('role', event)}
                   options={{
                     classes: '',
                     dropdownOptions: {
@@ -80,11 +140,11 @@ function SignupPage() {
                       outDuration: 250,
                     },
                   }}
-                  value="">
+                  value={form.role}>
                   <option disabled value="">
                     Оберіть вашу роль
                   </option>
-                  <option value="pasager">Пасажир</option>
+                  <option value="passenger">Пасажир</option>
                   <option value="driver">Водій</option>
                 </Select>
               </div>

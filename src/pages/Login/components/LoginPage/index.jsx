@@ -1,14 +1,51 @@
-import { useEffect } from 'react';
 import globalStyles from '../../../../styles/global.module.scss';
 import styles from './style.module.scss';
 import { Link } from 'react-router-dom';
 import { Button, Icon, NavItem, Navbar, Select, TextInput } from 'react-materialize';
+import { useMessage } from '../../../../message.hook';
+import { useState } from 'react';
+import http from '../../../../axios.common';
 
 function LoginPage() {
-  useEffect(() => {}, []);
+  const message = useMessage();
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
 
-  function handleLogin(e) {
+  function handleChange(name, event) {
+    setForm({ ...form, [name]: event.target.value });
+  }
+
+  async function handleLogin(e) {
     e.preventDefault();
+
+    try {
+      const data = (await http.post('/customer/login', form)).data;
+
+      console.log(data.customerId);
+      if (!data || data.customerId === 0) {
+        throw Error('Такий користувач не існує або не вірні дані');
+      }
+
+      localStorage.setItem('user_id', data.customerId);
+      localStorage.setItem('role', data.role);
+
+      setForm({
+        email: '',
+        password: '',
+      });
+
+      message(
+        `Користувач ${data.lastName} ${data.firstName} (${data.customerId}) увійшов в систему!`,
+      );
+    } catch (error) {
+      console.log(error);
+      message('Помилка при вході');
+
+      localStorage.setItem('user_id', 0);
+      localStorage.setItem('role', 0);
+    }
   }
 
   return (
@@ -44,10 +81,27 @@ function LoginPage() {
           <div className="row">
             <form className="col s12">
               <div className="row">
-                <TextInput email id="input_email" label="Email" validate m={12} />
+                <TextInput
+                  email
+                  id="input_email"
+                  label="Email"
+                  validate
+                  m={12}
+                  value={form.email}
+                  onChange={(event) => handleChange('email', event)}
+                />
               </div>
               <div className="row">
-                <TextInput password id="input_password" label="Пароль" validate m={12} />
+                <TextInput
+                  password
+                  data-length={20}
+                  id="input_password"
+                  label="Пароль"
+                  validate
+                  m={12}
+                  value={form.password}
+                  onChange={(event) => handleChange('password', event)}
+                />
               </div>
 
               <Button node="button" large modal="confirm" waves="light" onClick={handleLogin}>

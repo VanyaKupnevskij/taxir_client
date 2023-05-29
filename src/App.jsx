@@ -8,15 +8,15 @@ import TripsPage from './pages/Trips';
 import CreateTripPage from './pages/CreateTrip';
 import SelfTripsPage from './pages/SelfTrips';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
-  let isAuth = false;
-  let role = 'driver';
+  const [isAuth, setIsAuth] = useState(false);
+  const [role, setRole] = useState('driver');
 
   useEffect(() => {
-    isAuth = Boolean(localStorage.getItem('user_id'));
-    role = localStorage.getItem('role');
+    setIsAuth(Boolean(localStorage.getItem('user_id')));
+    setRole(localStorage.getItem('role'));
   }, []);
 
   return (
