@@ -3,10 +3,12 @@ import styles from './style.module.scss';
 import { Link } from 'react-router-dom';
 import { Button, Icon, NavItem, Navbar, Select, TextInput } from 'react-materialize';
 import { useMessage } from '../../../../message.hook';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import http from '../../../../axios.common';
+import { AuthContext } from '../../../../context/context';
 
 function LoginPage() {
+  const auth = useContext(AuthContext);
   const message = useMessage();
   const [form, setForm] = useState({
     email: '',
@@ -28,8 +30,7 @@ function LoginPage() {
         throw Error('Такий користувач не існує або не вірні дані');
       }
 
-      localStorage.setItem('user_id', data.customerId);
-      localStorage.setItem('role', data.role);
+      auth.login(data.customerId, data.role);
 
       setForm({
         email: '',
