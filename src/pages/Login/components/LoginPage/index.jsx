@@ -1,5 +1,4 @@
 import globalStyles from '../../../../styles/global.module.scss';
-import styles from './style.module.scss';
 import { Link } from 'react-router-dom';
 import { Button, Icon, NavItem, Navbar, Select, TextInput } from 'react-materialize';
 import { useMessage } from '../../../../message.hook';

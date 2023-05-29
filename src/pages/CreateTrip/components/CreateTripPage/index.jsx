@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import globalStyles from '../../../../styles/global.module.scss';
-import styles from './style.module.scss';
 import { Button, Icon, Modal, Navbar, TextInput } from 'react-materialize';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../../context/context';

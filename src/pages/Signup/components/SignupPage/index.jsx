@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import globalStyles from '../../../../styles/global.module.scss';
-import styles from './style.module.scss';
 import { Link } from 'react-router-dom';
-import { Button, Icon, NavItem, Navbar, Select, TextInput } from 'react-materialize';
+import { Button, Icon, Navbar, Select, TextInput } from 'react-materialize';
 import http from '../../../../axios.common';
 import { useMessage } from '../../../../message.hook';
 

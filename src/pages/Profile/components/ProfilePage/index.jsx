@@ -1,18 +1,6 @@
 import globalStyles from '../../../../styles/global.module.scss';
-import styles from './style.module.scss';
 import { Link } from 'react-router-dom';
-import {
-  Button,
-  Col,
-  Collection,
-  CollectionItem,
-  Icon,
-  NavItem,
-  Navbar,
-  Row,
-  Select,
-  TextInput,
-} from 'react-materialize';
+import { Button, Col, Collection, CollectionItem, Icon, Navbar, Row } from 'react-materialize';
 import { useMessage } from '../../../../message.hook';
 import { useContext, useEffect, useState } from 'react';
 import http from '../../../../axios.common';

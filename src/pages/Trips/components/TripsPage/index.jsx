@@ -1,18 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import globalStyles from '../../../../styles/global.module.scss';
-import styles from './style.module.scss';
 import newStatusImage from '../../../../images/new.svg';
 import travelStatusImage from '../../../../images/travel.svg';
 import completeStatusImage from '../../../../images/complete.svg';
-import {
-  Button,
-  Collapsible,
-  CollapsibleItem,
-  Icon,
-  Modal,
-  Navbar,
-  TextInput,
-} from 'react-materialize';
+import { Button, Collapsible, CollapsibleItem, Icon, Modal, Navbar } from 'react-materialize';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../../context/context';
 import http from '../../../../axios.common';
@@ -149,9 +140,9 @@ function TripsPage() {
                         <span>
                           <img
                             src={
-                              trip.status == 'Нова'
+                              trip.status === 'Нова'
                                 ? newStatusImage
-                                : trip.status == 'В поїздці'
+                                : trip.status === 'В поїздці'
                                 ? travelStatusImage
                                 : completeStatusImage
                             }
@@ -175,7 +166,7 @@ function TripsPage() {
                     Час поїздки: {trip.tripTime} <br />
                     Ціна: <b>{trip.price}</b> грн <br />
                     <br />
-                    {trip.status == 'Нова' && (
+                    {trip.status === 'Нова' && (
                       <Button
                         node="button"
                         waves="light"
