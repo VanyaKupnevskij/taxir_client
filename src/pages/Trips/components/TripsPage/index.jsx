@@ -1,7 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
 import globalStyles from '../../../../styles/global.module.scss';
 import styles from './style.module.scss';
-import { Button, Collapsible, CollapsibleItem, Icon, Navbar, TextInput } from 'react-materialize';
+import newStatusImage from '../../../../images/new.svg';
+import travelStatusImage from '../../../../images/travel.svg';
+import completeStatusImage from '../../../../images/complete.svg';
+import {
+  Button,
+  Collapsible,
+  CollapsibleItem,
+  Icon,
+  Modal,
+  Navbar,
+  TextInput,
+} from 'react-materialize';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../../context/context';
 import http from '../../../../axios.common';
@@ -10,6 +21,7 @@ import { useMessage } from '../../../../message.hook';
 function TripsPage() {
   const auth = useContext(AuthContext);
   const message = useMessage();
+  const [confirmedTrip, setConfirmedTrip] = useState(null);
   const [trips, setTrips] = useState([]);
 
   useEffect(() => {
@@ -26,6 +38,50 @@ function TripsPage() {
       message('Помилка при завантаженні поїздок');
       setTrips([]);
     }
+  }
+
+  async function confirmTrip(tripId) {
+    try {
+      const data = (
+        await http.patch('/trip/updateStatus', {
+          status: 'В поїздці',
+          tripId,
+          driverId: auth.user_id,
+        })
+      ).data;
+
+      setConfirmedTrip({ ...data });
+      message('Поїздка прийнята вдало!');
+
+      setTimeout(() => completeTrip(tripId), (Math.random() * 5 + 5) * 1000);
+    } catch (error) {
+      console.log(error);
+      message('Помилка при прийняті поїздки');
+      setConfirmedTrip(null);
+    }
+  }
+
+  async function completeTrip(tripId) {
+    try {
+      const data = (
+        await http.patch('/trip/updateStatus', {
+          status: 'Завершено',
+          tripId,
+          driverId: auth.user_id,
+        })
+      ).data;
+
+      setConfirmedTrip({ ...data });
+      message('Поїздка завершена вдало!');
+    } catch (error) {
+      console.log(error);
+      message('Помилка при завершені поїздки');
+      setConfirmedTrip(null);
+    }
+  }
+
+  function handleConfirm(tripId) {
+    confirmTrip(tripId);
   }
 
   function handleLogout(e) {
@@ -81,13 +137,33 @@ function TripsPage() {
                     key={trip.tripId}
                     expanded={false}
                     header={
-                      <span
-                        style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                        Поїздка до: {trip.tripTo}
+                      <div
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                        }}>
+                        <span>
+                          <img
+                            src={
+                              trip.status == 'Нова'
+                                ? newStatusImage
+                                : trip.status == 'В поїздці'
+                                ? travelStatusImage
+                                : completeStatusImage
+                            }
+                            alt="status"
+                            width={25}
+                            style={{ marginRight: '2rem' }}
+                          />
+                          Поїздка до: {trip.tripTo}
+                        </span>
                         <span>
                           Ціна: <b>{trip.price}</b> грн
                         </span>
-                      </span>
+                      </div>
                     }
                     node="div">
                     Від: {trip.tripFrom} <br />
@@ -96,7 +172,16 @@ function TripsPage() {
                     Статус: {trip.status} <br />
                     Відстань: {trip.distance} км <br />
                     Час поїздки: {trip.tripTime} <br />
-                    Ціна: <b>{trip.price}</b> грн
+                    Ціна: <b>{trip.price}</b> грн <br />
+                    <br />
+                    {trip.status == 'Нова' && (
+                      <Button
+                        node="button"
+                        waves="light"
+                        onClick={() => handleConfirm(trip.tripId)}>
+                        Прийняти поїздку
+                      </Button>
+                    )}
                   </CollapsibleItem>
                 );
               })}
@@ -104,6 +189,44 @@ function TripsPage() {
           </div>
         </div>
       </div>
+
+      {confirmedTrip && (
+        <Modal
+          actions={[
+            <Button flat modal="close" node="button" waves="green">
+              Закрити
+            </Button>,
+          ]}
+          bottomSheet={false}
+          fixedFooter={false}
+          header="Створена поїздка"
+          id="modal1"
+          open={confirmedTrip != null}
+          options={{
+            dismissible: true,
+            endingTop: '10%',
+            inDuration: 250,
+            onCloseEnd: null,
+            onCloseStart: null,
+            onOpenEnd: null,
+            onOpenStart: null,
+            opacity: 0.5,
+            outDuration: 250,
+            preventScrolling: true,
+            startingTop: '4%',
+          }}>
+          <div className="row">Початкова точка: {confirmedTrip.tripFrom}</div>
+          <div className="row">Кінечна точка: {confirmedTrip.tripTo}</div>
+          <div className="row">Погода: {confirmedTrip.weather}</div>
+          <div className="row">Час поїздки: {confirmedTrip.tripTime}</div>
+          <div className="row">Статус: {confirmedTrip.status}</div>
+          <div className="row">Відстань: {confirmedTrip.distance} км</div>
+          <br />
+          <div className="row">
+            Ціна: <b>{confirmedTrip.price}</b> грн
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

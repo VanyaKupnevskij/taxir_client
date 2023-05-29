@@ -18,7 +18,8 @@ function SelfTripsPage() {
 
   async function loadTrips() {
     try {
-      const data = (await http.get('/trip/getAllByCustomer/' + auth.user_id)).data;
+      const loadPath = auth.role == 'driver' ? '/trip/getAllByDriver/' : '/trip/getAllByCustomer/';
+      const data = (await http.get(loadPath + auth.user_id)).data;
 
       setTrips([...data]);
     } catch (error) {

@@ -137,7 +137,7 @@ function CreateTripPage() {
           fixedFooter={false}
           header="Створена поїздка"
           id="modal1"
-          open={createdTrip}
+          open={createdTrip != null}
           options={{
             dismissible: true,
             endingTop: '10%',
