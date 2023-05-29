@@ -23,6 +23,14 @@ function SignupPage() {
   async function handleSignup(e) {
     e.preventDefault();
 
+    if (
+      form.email.length < 6 ||
+      form.password.length < 4 ||
+      form.role.length < 3 ||
+      form.firstName.length < 4
+    )
+      return;
+
     try {
       const data = (await http.post('/customer/create', form)).data;
 
